@@ -1,28 +1,31 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var ejsLayout = require('express-ejs-layouts')
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
+const ejsLayout = require("express-ejs-layouts");
 
-var app = express();
-app.listen(3000,()=>{
-  console.log('server berjalan')
-  })
+const app = express();
+app.listen(3000, () => {
+  console.log("server berjalan");
+});
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(ejsLayout)
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+app.use(ejsLayout);
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
+// routes
+const productRoutes = require("./routes/productsRoutes");
+app.use("/products", productRoutes);
 
-var indexRouter = require('./routes/index');
-app.use('/', indexRouter);
-
+// err handling
+const notFound = require("./errors/notfound");
+app.use(notFound);
 
 module.exports = app;
